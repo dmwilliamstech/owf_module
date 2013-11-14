@@ -116,7 +116,7 @@ exec{'cp_ivy_jar':
 }->
 exec{'/tmp/vagrant-puppet/manifests/owf_module/exportPath.sh':
 	path=>['/bin/sh', '/bin/bash'],
-	command=>'/tmp/vagrant-puppet/manifests/exportPath.sh',
+	command=>'/tmp/vagrant-puppet/manifests/owf_module/exportPath.sh',
 } ->
 exec {'restart_shell':
 	path=>['/bin/sh', '/bin/bash', '/usr/bin', '/bin', '/usr/sbin'],
