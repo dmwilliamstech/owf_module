@@ -14,8 +14,7 @@ exec {'set_java_home':
 exec{'move_tool-jar':
 	path=>['/usr/bin', '/usr/sbin/', '/bin'],
 	command=>'sudo cp /usr/lib/jvm/java-1.6.0-openjdk.x86_64/lib/tools.jar /usr/lib/jvm/java-1.6.0-openjdk.x86_64/jre/lib/ext/'
-
-}->
+} ->
 package{'ruby':
 	ensure=>'present',
 	provider=>'yum'
@@ -97,7 +96,6 @@ package {'ant-contrib':
 	ensure=>'present',
 	provider=>'yum'
 } ->
-
 exec {'clone_owf':
 	cwd =>'/home/vagrant',
         path => '/usr/bin',
@@ -117,18 +115,25 @@ exec{'cp_ivy_jar':
         path=>['/usr/bin', '/usr/sbin/', '/bin'],
         command=>'cp ivy-2.1.0.jar /usr/share/ant/lib'
 }->
-exec{'export_path':
-	command=>'/tmp/vagrant-puppet/manifests/owf_module/exportPath.sh',
-}->
-exec {'source_bashrc':
-	provider=>'shell',
-        cwd=>'/home/vagrant',
-        refreshonly=>true,
-        command=>'source .bashrc'
+exec{'/tmp/vagrant-puppet/manifests/owf_module/exportPath.sh':
+	path=>['/bin/sh', '/bin/bash'],
+	command=>'/tmp/vagrant-puppet/manifests/exportPath.sh',
+} ->
+exec {'restart_shell':
+	path=>['/bin/sh', '/bin/bash', '/usr/bin', '/bin', '/usr/sbin'],
+	command=>'bash'
 }->
 exec {'test_owf':
 	cwd=>'/home/vagrant/owf',
 	path=>['/usr/bin', '/bin', '/home/vagrant/grails-1.3.7/bin'],
-	command=>"grails test-app",
+	command=>"grails test-app"
+}->
+exec {'run_owf':
+	path=>['/usr/bin', '/bin', '/home/vagrant/grails-1.3.7/bin'],
+	cwd=>'/home/vagrant/owf',
+	command=>"grails run-app",
+}->
+exec {'owfRunning?':
+	command=> '/usr/bin/wget -q0- https://localhost:8443/owf'
 }
 
