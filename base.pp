@@ -1,4 +1,3 @@
-
 package {'git':
 	ensure=>'present',
 	provider=>'yum'
@@ -122,18 +121,5 @@ exec{'/tmp/vagrant-puppet/manifests/owf_module/exportPath.sh':
 exec {'restart_shell':
 	path=>['/bin/sh', '/bin/bash', '/usr/bin', '/bin', '/usr/sbin'],
 	command=>'bash'
-}->
-exec {'test_owf':
-	cwd=>'/home/vagrant/owf',
-	path=>['/usr/bin', '/bin', '/home/vagrant/grails-1.3.7/bin'],
-	command=>"grails test-app"
-}->
-exec {'run_owf':
-	path=>['/usr/bin', '/bin', '/home/vagrant/grails-1.3.7/bin'],
-	cwd=>'/home/vagrant/owf',
-	command=>"grails run-app",
-}->
-exec {'owfRunning?':
-	command=> '/usr/bin/wget -q0- https://localhost:8443/owf'
 }
 
